@@ -235,6 +235,7 @@ public class StashNotifierTest {
     sn = spy(sn);
     doReturn(hashes).when(sn).lookupCommitSha1s(eq(build), eq(buildListener));
     doReturn(notificationResult).when(sn).notifyStash(any(PrintStream.class), any(AbstractBuild.class), eq(sha1), eq(buildListener), any(StashBuildState.class));
+    doReturn(notificationResult).when(sn).commentToStash(any(PrintStream.class), any(AbstractBuild.class), eq(sha1), eq(buildListener), any(StashBuildState.class));
 
     //when
     boolean perform = sn.perform(build, launcher, buildListener);
@@ -243,37 +244,37 @@ public class StashNotifierTest {
     assertThat(perform, is(true));
   }
 
-//  @Test
-//  public void test_perform_success() throws Exception {
-//    //given
-//    ArrayList<String> hashes = new ArrayList<String>();
-//    hashes.add(sha1);
-//    PrintStream logger = mock(PrintStream.class);
-//
-//    //when
-//    test_perform(Result.SUCCESS, logger, new NotificationResult(true, ""), hashes);
-//
-//    //then
-//    ArgumentCaptor<String> messageCaptor = ArgumentCaptor.forClass(String.class);
-//    verify(logger).println(messageCaptor.capture());
-//    assertThat(messageCaptor.getValue(), is(containsString("Notified Stash for commit with id")));
-//  }
-//
-//  @Test
-//  public void test_perform_failure() throws Exception {
-//    //given
-//    ArrayList<String> hashes = new ArrayList<String>();
-//    hashes.add(sha1);
-//    PrintStream logger = mock(PrintStream.class);
-//
-//    //when
-//    test_perform(Result.FAILURE, logger, new NotificationResult(false, ""), hashes);
-//
-//    //then
-//    ArgumentCaptor<String> messageCaptor = ArgumentCaptor.forClass(String.class);
-//    verify(logger).println(messageCaptor.capture());
-//    assertThat(messageCaptor.getValue(), is(containsString("Failed to notify Stash for commit")));
-//  }
+  @Test
+  public void test_perform_success() throws Exception {
+    //given
+    ArrayList<String> hashes = new ArrayList<String>();
+    hashes.add(sha1);
+    PrintStream logger = mock(PrintStream.class);
+
+    //when
+    test_perform(Result.SUCCESS, logger, new NotificationResult(true, ""), hashes);
+
+    //then
+    ArgumentCaptor<String> messageCaptor = ArgumentCaptor.forClass(String.class);
+    verify(logger).println(messageCaptor.capture());
+    assertThat(messageCaptor.getValue(), is(containsString("Notified Stash for commit with id")));
+  }
+
+  @Test
+  public void test_perform_failure() throws Exception {
+    //given
+    ArrayList<String> hashes = new ArrayList<String>();
+    hashes.add(sha1);
+    PrintStream logger = mock(PrintStream.class);
+
+    //when
+    test_perform(Result.FAILURE, logger, new NotificationResult(false, ""), hashes);
+
+    //then
+    ArgumentCaptor<String> messageCaptor = ArgumentCaptor.forClass(String.class);
+    verify(logger).println(messageCaptor.capture());
+    assertThat(messageCaptor.getValue(), is(containsString("Failed to notify Stash for commit")));
+  }
 
   @Test
   public void test_perform_empty_hash() throws Exception {
