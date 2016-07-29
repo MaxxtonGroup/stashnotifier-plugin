@@ -744,8 +744,9 @@ public class StashNotifier extends Notifier {
     EnvVars envVars = new EnvVars();
     envVars = build.getEnvironment(listener);
     String pullRequestUrl = envVars.get("PULL_REQUEST_URL");
+    String pullRequestId = envVars.get("PULL_REQUEST_ID");
 
-    HttpPost req = new HttpPost(url + "/rest/api/1.0/projects/" + this.getProjectKey(pullRequestUrl) + "/repos/" + this.getRepositoryName(pullRequestUrl) + "/pull-requests/" + "82" + "/comments");
+    HttpPost req = new HttpPost(url + "/rest/api/1.0/projects/" + this.getProjectKey(pullRequestUrl) + "/repos/" + this.getRepositoryName(pullRequestUrl) + "/pull-requests/" + pullRequestId + "/comments");
 
     UsernamePasswordCredentials usernamePasswordCredentials = getCredentials(UsernamePasswordCredentials.class, build.getProject());
 
