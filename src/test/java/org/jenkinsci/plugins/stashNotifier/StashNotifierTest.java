@@ -81,7 +81,16 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ Secret.class, Jenkins.class, HttpClientBuilder.class, TokenMacro.class, CredentialsMatchers.class, com.cloudbees.plugins.credentials.CredentialsProvider.class })
+@PrepareForTest(
+  {
+    Secret.class,
+    Jenkins.class,
+    HttpClientBuilder.class,
+    TokenMacro.class,
+    CredentialsMatchers.class,
+    com.cloudbees.plugins.credentials.CredentialsProvider.class
+  }
+)
 @PowerMockIgnore("javax.net.ssl.*")
 public class StashNotifierTest {
   final static String sha1 = "1234567890123456789012345678901234567890";
@@ -148,8 +157,12 @@ public class StashNotifierTest {
     when(lastBuild.getMarked()).thenReturn(revision);
 
     when(TokenMacro.expandAll(build, buildListener, "test-project")).thenReturn("prepend-key");
-    when(com.cloudbees.plugins.credentials.CredentialsProvider.lookupCredentials((Class) anyObject(), (ItemGroup) anyObject(), (Authentication) anyObject(), (List<DomainRequirement>) anyList()))
-        .thenReturn(new ArrayList<Credentials>());
+    when(com.cloudbees.plugins.credentials.CredentialsProvider.lookupCredentials(
+      (Class) anyObject(),
+      (ItemGroup) anyObject(),
+      (Authentication) anyObject(),
+      (List<DomainRequirement>) anyList()
+    )).thenReturn(new ArrayList<Credentials>());
 
     sn = buildStashNotifier("http://localhost");
   }
@@ -169,8 +182,14 @@ public class StashNotifierTest {
   public void test_build_http_client_with_proxy() throws Exception {
     //given
     StashNotifier sn = spy(this.sn);
-    doReturn(new ArrayList<Credentials>()).when(sn)
-        .lookupCredentials(Mockito.<Class>anyObject(), Mockito.<Item>anyObject(), Mockito.<Authentication>anyObject(), Mockito.<ArrayList<DomainRequirement>>anyObject());
+    doReturn(new ArrayList<Credentials>())
+      .when(sn)
+      .lookupCredentials(
+        Mockito.<Class>anyObject(),
+        Mockito.<Item>anyObject(),
+        Mockito.<Authentication>anyObject(),
+        Mockito.<ArrayList<DomainRequirement>>anyObject()
+      );
 
     String address = "192.168.1.1";
     int port = 8080;
@@ -184,7 +203,8 @@ public class StashNotifierTest {
 
     when(httpClientBuilder.setProxy(any(HttpHost.class))).thenReturn(httpClientBuilder);
     when(httpClientBuilder.setDefaultCredentialsProvider(any(CredentialsProvider.class))).thenReturn(httpClientBuilder);
-    when(httpClientBuilder.setProxyAuthenticationStrategy(any(AuthenticationStrategy.class))).thenReturn(httpClientBuilder);
+    when(httpClientBuilder.setProxyAuthenticationStrategy(any(AuthenticationStrategy.class))).thenReturn(
+      httpClientBuilder);
 
     jenkins.proxy = new ProxyConfiguration(address, port, login, password);
     PrintStream logger = mock(PrintStream.class);
@@ -204,7 +224,8 @@ public class StashNotifierTest {
     ArgumentCaptor<CredentialsProvider> credentialsProviderCaptor = ArgumentCaptor.forClass(CredentialsProvider.class);
     verify(httpClientBuilder).setDefaultCredentialsProvider(credentialsProviderCaptor.capture());
     CredentialsProvider credentialsProvider = credentialsProviderCaptor.getValue();
-    org.apache.http.auth.UsernamePasswordCredentials credentials = (UsernamePasswordCredentials) credentialsProvider.getCredentials(new AuthScope(proxy));
+    org.apache.http.auth.UsernamePasswordCredentials credentials = (UsernamePasswordCredentials) credentialsProvider.getCredentials(
+      new AuthScope(proxy));
     //credentials
     assertThat(credentials.getUserName(), is(login));
     assertThat(credentials.getPassword(), is(password));
@@ -215,8 +236,14 @@ public class StashNotifierTest {
     //given
     sn = spy(new StashNotifier("https://localhost", "scot", true, true, null, true, null, false, false));
 
-    doReturn(new ArrayList<Credentials>()).when(sn)
-        .lookupCredentials(Mockito.<Class>anyObject(), Mockito.<Item>anyObject(), Mockito.<Authentication>anyObject(), Mockito.<ArrayList<DomainRequirement>>anyObject());
+    doReturn(new ArrayList<Credentials>())
+      .when(sn)
+      .lookupCredentials(
+        Mockito.<Class>anyObject(),
+        Mockito.<Item>anyObject(),
+        Mockito.<Authentication>anyObject(),
+        Mockito.<ArrayList<DomainRequirement>>anyObject()
+      );
     PrintStream logger = mock(PrintStream.class);
 
     //when
@@ -227,15 +254,36 @@ public class StashNotifierTest {
     verify(httpClientBuilder).setConnectionManager(any(HttpClientConnectionManager.class));
   }
 
-  private void test_perform(Result result, PrintStream logger, NotificationResult notificationResult, List<String> hashes) throws Exception {
+  private void test_perform(
+    Result result,
+    PrintStream logger,
+    NotificationResult notificationResult,
+    List<String> hashes
+  ) throws Exception {
     //given
     when(buildListener.getLogger()).thenReturn(logger);
     when(build.getResult()).thenReturn(result);
     Launcher launcher = mock(Launcher.class);
     sn = spy(sn);
     doReturn(hashes).when(sn).lookupCommitSha1s(eq(build), eq(buildListener));
-    doReturn(notificationResult).when(sn).notifyStash(any(PrintStream.class), any(AbstractBuild.class), eq(sha1), eq(buildListener), any(StashBuildState.class));
-    doReturn(notificationResult).when(sn).commentToStash(any(PrintStream.class), any(AbstractBuild.class), eq(sha1), eq(buildListener), any(StashBuildState.class));
+    doReturn(notificationResult)
+      .when(sn)
+      .notifyStash(
+        any(PrintStream.class),
+        any(AbstractBuild.class),
+        eq(sha1),
+        eq(buildListener),
+        any(StashBuildState.class)
+      );
+    doReturn(notificationResult)
+      .when(sn)
+      .commentToStash(
+        any(PrintStream.class),
+        any(AbstractBuild.class),
+        eq(sha1),
+        eq(buildListener),
+        any(StashBuildState.class)
+      );
 
     //when
     boolean perform = sn.perform(build, launcher, buildListener);
@@ -290,7 +338,13 @@ public class StashNotifierTest {
 
     //then
     assertThat(perform, is(true));
-    verify(sn, never()).notifyStash(any(PrintStream.class), any(AbstractBuild.class), anyString(), eq(buildListener), any(StashBuildState.class));
+    verify(sn, never()).notifyStash(
+      any(PrintStream.class),
+      any(AbstractBuild.class),
+      anyString(),
+      eq(buildListener),
+      any(StashBuildState.class)
+    );
     verify(logger).println("found no commit info");
   }
 
@@ -356,9 +410,18 @@ public class StashNotifierTest {
 
   @Test
   public void test_getBuildDescription_state() throws InterruptedException, MacroEvaluationException, IOException {
-    assertThat(getBuildDescriptionWhenBuildDescriptionIsNull(StashBuildState.SUCCESSFUL), is("built by Jenkins @ http://localhost/"));
-    assertThat(getBuildDescriptionWhenBuildDescriptionIsNull(StashBuildState.FAILED), is("built by Jenkins @ http://localhost/"));
-    assertThat(getBuildDescriptionWhenBuildDescriptionIsNull(StashBuildState.INPROGRESS), is("building on Jenkins @ http://localhost/"));
+    assertThat(
+      getBuildDescriptionWhenBuildDescriptionIsNull(StashBuildState.SUCCESSFUL),
+      is("built by Jenkins @ http://localhost/")
+    );
+    assertThat(
+      getBuildDescriptionWhenBuildDescriptionIsNull(StashBuildState.FAILED),
+      is("built by Jenkins @ http://localhost/")
+    );
+    assertThat(
+      getBuildDescriptionWhenBuildDescriptionIsNull(StashBuildState.INPROGRESS),
+      is("building on Jenkins @ http://localhost/")
+    );
   }
 
   @Test
@@ -366,9 +429,22 @@ public class StashNotifierTest {
     //given
     StashNotifier sn = spy(this.sn);
     ArrayList<Credentials> credentialList = new ArrayList<Credentials>();
-    UsernamePasswordCredentialsImpl credential = new UsernamePasswordCredentialsImpl(CredentialsScope.GLOBAL, "", "", "admin", "tiger");
+    UsernamePasswordCredentialsImpl credential = new UsernamePasswordCredentialsImpl(
+      CredentialsScope.GLOBAL,
+      "",
+      "",
+      "admin",
+      "tiger"
+    );
     credentialList.add(credential);
-    doReturn(credentialList).when(sn).lookupCredentials(Mockito.<Class>anyObject(), Mockito.<Item>anyObject(), Mockito.<Authentication>anyObject(), Mockito.<ArrayList<DomainRequirement>>anyObject());
+    doReturn(credentialList)
+      .when(sn)
+      .lookupCredentials(
+        Mockito.<Class>anyObject(),
+        Mockito.<Item>anyObject(),
+        Mockito.<Authentication>anyObject(),
+        Mockito.<ArrayList<DomainRequirement>>anyObject()
+      );
     PowerMockito.mockStatic(CredentialsMatchers.class);
     when(CredentialsMatchers.firstOrNull(anyCollection(), any(CredentialsMatcher.class))).thenReturn(credential);
 
