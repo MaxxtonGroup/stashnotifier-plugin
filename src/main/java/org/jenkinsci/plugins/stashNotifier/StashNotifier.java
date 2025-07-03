@@ -399,9 +399,7 @@ public class StashNotifier extends Notifier {
       // SSLPeerUnverifiedException
       try {
         SSLConnectionSocketFactory sslConnSocketFactory = new SSLConnectionSocketFactory(
-          buildSslContext(ignoreUnverifiedSSL,
-            certificateCredentials
-        ),
+          buildSslContext(ignoreUnverifiedSSL, certificateCredentials),
           ignoreUnverifiedSSL ? SSLConnectionSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER : null
         );
         builder.setSSLSocketFactory(sslConnSocketFactory);
@@ -531,31 +529,27 @@ public class StashNotifier extends Notifier {
     public ListBoxModel doFillCredentialsIdItems(@AncestorInPath Item project) {
 
       if (project != null && project.hasPermission(Item.CONFIGURE)) {
-        return new StandardListBoxModel()
-          .withEmptySelection()
-          .withMatching(
-            new StashCredentialMatcher(),
-            CredentialsProvider.lookupCredentials(
-              StandardCredentials.class,
-              project,
-              ACL.SYSTEM,
-              new ArrayList<DomainRequirement>()
-            )
-          );
+        return new StandardListBoxModel().withEmptySelection().withMatching(
+          new StashCredentialMatcher(),
+          CredentialsProvider.lookupCredentials(
+            StandardCredentials.class,
+            project,
+            ACL.SYSTEM,
+            new ArrayList<DomainRequirement>()
+          )
+        );
 
       }
       else if (Jenkins.getInstance().hasPermission(Item.CONFIGURE)) {
-        return new StandardListBoxModel()
-          .withEmptySelection()
-          .withMatching(
-            new StashCredentialMatcher(),
-            CredentialsProvider.lookupCredentials(
-              StandardCredentials.class,
-              Jenkins.getInstance(),
-              ACL.SYSTEM,
-              new ArrayList<DomainRequirement>()
-            )
-          );
+        return new StandardListBoxModel().withEmptySelection().withMatching(
+          new StashCredentialMatcher(),
+          CredentialsProvider.lookupCredentials(
+            StandardCredentials.class,
+            Jenkins.getInstance(),
+            ACL.SYSTEM,
+            new ArrayList<DomainRequirement>()
+          )
+        );
       }
 
       return new StandardListBoxModel();
@@ -759,7 +753,8 @@ public class StashNotifier extends Notifier {
           project,
           ACL.SYSTEM,
           new ArrayList<DomainRequirement>()
-        ), CredentialsMatchers.withId(credentialsId)
+        ),
+        CredentialsMatchers.withId(credentialsId)
       );
     }
 
@@ -770,12 +765,8 @@ public class StashNotifier extends Notifier {
       }
       if (StringUtils.isNotBlank(credentialsId) && clazz != null && project != null) {
         credentials = CredentialsMatchers.firstOrNull(
-          lookupCredentials(
-            clazz,
-            Jenkins.getInstance(),
-            ACL.SYSTEM,
-            new ArrayList<DomainRequirement>()
-          ), CredentialsMatchers.withId(credentialsId)
+          lookupCredentials(clazz, Jenkins.getInstance(), ACL.SYSTEM, new ArrayList<DomainRequirement>()),
+          CredentialsMatchers.withId(credentialsId)
         );
       }
     }
@@ -862,7 +853,9 @@ public class StashNotifier extends Notifier {
         new org.apache.http.auth.UsernamePasswordCredentials(
           usernamePasswordCredentials.getUsername(),
           usernamePasswordCredentials.getPassword().getPlainText()
-        ), "UTF-8", false
+        ),
+        "UTF-8",
+        false
       ));
     }
 
@@ -935,7 +928,9 @@ public class StashNotifier extends Notifier {
         new org.apache.http.auth.UsernamePasswordCredentials(
           usernamePasswordCredentials.getUsername(),
           usernamePasswordCredentials.getPassword().getPlainText()
-        ), "UTF-8", false
+        ),
+        "UTF-8",
+        false
       ));
     }
 

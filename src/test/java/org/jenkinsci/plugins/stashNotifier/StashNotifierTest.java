@@ -182,14 +182,12 @@ public class StashNotifierTest {
   public void test_build_http_client_with_proxy() throws Exception {
     //given
     StashNotifier sn = spy(this.sn);
-    doReturn(new ArrayList<Credentials>())
-      .when(sn)
-      .lookupCredentials(
-        Mockito.<Class>anyObject(),
-        Mockito.<Item>anyObject(),
-        Mockito.<Authentication>anyObject(),
-        Mockito.<ArrayList<DomainRequirement>>anyObject()
-      );
+    doReturn(new ArrayList<Credentials>()).when(sn).lookupCredentials(
+      Mockito.<Class>anyObject(),
+      Mockito.<Item>anyObject(),
+      Mockito.<Authentication>anyObject(),
+      Mockito.<ArrayList<DomainRequirement>>anyObject()
+    );
 
     String address = "192.168.1.1";
     int port = 8080;
@@ -236,14 +234,12 @@ public class StashNotifierTest {
     //given
     sn = spy(new StashNotifier("https://localhost", "scot", true, true, null, true, null, false, false));
 
-    doReturn(new ArrayList<Credentials>())
-      .when(sn)
-      .lookupCredentials(
-        Mockito.<Class>anyObject(),
-        Mockito.<Item>anyObject(),
-        Mockito.<Authentication>anyObject(),
-        Mockito.<ArrayList<DomainRequirement>>anyObject()
-      );
+    doReturn(new ArrayList<Credentials>()).when(sn).lookupCredentials(
+      Mockito.<Class>anyObject(),
+      Mockito.<Item>anyObject(),
+      Mockito.<Authentication>anyObject(),
+      Mockito.<ArrayList<DomainRequirement>>anyObject()
+    );
     PrintStream logger = mock(PrintStream.class);
 
     //when
@@ -437,14 +433,12 @@ public class StashNotifierTest {
       "tiger"
     );
     credentialList.add(credential);
-    doReturn(credentialList)
-      .when(sn)
-      .lookupCredentials(
-        Mockito.<Class>anyObject(),
-        Mockito.<Item>anyObject(),
-        Mockito.<Authentication>anyObject(),
-        Mockito.<ArrayList<DomainRequirement>>anyObject()
-      );
+    doReturn(credentialList).when(sn).lookupCredentials(
+      Mockito.<Class>anyObject(),
+      Mockito.<Item>anyObject(),
+      Mockito.<Authentication>anyObject(),
+      Mockito.<ArrayList<DomainRequirement>>anyObject()
+    );
     PowerMockito.mockStatic(CredentialsMatchers.class);
     when(CredentialsMatchers.firstOrNull(anyCollection(), any(CredentialsMatcher.class))).thenReturn(credential);
 

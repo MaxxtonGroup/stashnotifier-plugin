@@ -46,9 +46,9 @@ public final class NotificationResult {
    * returns a new NotificationResult instance indicating a failed
    * notification.
    *
+   * @param message the message indicating why the notifiation failed
    * @return a new NotificationResult instance indicating a successful
    * notification
-   * @param  message  the message indicating why the notifiation failed
    */
   public static NotificationResult newFailure(String message) {
     return new NotificationResult(false, message);
